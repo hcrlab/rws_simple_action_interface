@@ -52,6 +52,6 @@
     <!-- <metapackage/> -->
 
     <!-- Other tools can request additional information be placed here -->
-    <appname>Say something</appname>
+    <appname>Simple Action Interface</appname>
   </export>
 </package>
