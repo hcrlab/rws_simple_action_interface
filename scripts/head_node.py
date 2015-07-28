@@ -1,9 +1,5 @@
 #!/usr/bin/env python
 
-#from sound_play.libsoundplay import SoundClient
-#from sound_play.msg import SoundRequest
-#from std_msgs.msg import String
-#import rospy
 import rospy
 from pr2_controllers_msgs.msg import PointHeadAction
 from pr2_controllers_msgs.msg import PointHeadGoal
@@ -16,7 +12,6 @@ class Head(object):
         self._action_client = actionlib.SimpleActionClient("/head_traj_controller/point_head_action",
                                                             PointHeadAction)
     def lookAt(self, frame_id, x, y, z): 
-        #nod function calls lookAt twice
         self._action_client.wait_for_server()
         goal = PointHeadGoal()
 
@@ -33,7 +28,6 @@ class Head(object):
         goal.pointing_axis.x = 1
         goal.pointing_axis.y = 0
         goal.pointing_axis.z = 0
-        #Check the formatting of min_duration!
         goal.min_duration = rospy.Duration(0.5)
         goal.max_velocity = 1.0
 
@@ -63,23 +57,13 @@ class Head(object):
             count += 1
 
 def main():
-    #Naming the node: same as file? Specific?
     rospy.init_node('head_nod_node')
     head = Head()
     rospy.Subscriber('nod', Int8, head.nod)
-    #write second subscriber for shakeHead with another function
     rospy.Subscriber('shake', Int8, head.shake)
-    #look up msg type
     rospy.spin()
-    #How do you use Subscriber? I want to use nod(with an int)
     
-#def main():
-#    rospy.init_node('sound_play_tts')
-#    sound_handle = SoundClient()
-#    voice = 'voice_kal_diphone'
-#    speaker = Speaker(sound_handle, voice)
-#    rospy.Subscriber('text_to_speech', String, speaker.speak)
-#    rospy.spin()
+
 
 if __name__ == '__main__':
     main()
