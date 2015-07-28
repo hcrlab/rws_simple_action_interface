@@ -16,7 +16,6 @@ class Head(object):
         self._action_client = actionlib.SimpleActionClient("/head_traj_controller/point_head_action",
                                                             PointHeadAction)
     def lookAt(self, frame_id, x, y, z): 
-        #nod function calls lookAt twice
         self._action_client.wait_for_server()
         goal = PointHeadGoal()
 
