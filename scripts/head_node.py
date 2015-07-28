@@ -16,7 +16,6 @@ class Head(object):
         goal = PointHeadGoal()
 
         point = PointStamped()
-        #frame_id is brought in as an argument
         point.header.frame_id = frame_id
         point.point.x = x
         point.point.y = y
