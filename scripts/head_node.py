@@ -51,6 +51,7 @@ class Head(object):
     def shake(self, msg):
         count = 0
         while (not rospy.is_shutdown() and count < msg.data):
+            #test the z value?
             self.lookAt("base_link", 3.0, 0.75, 1.25)
             self.lookAt("base_link", 3.0, -0.75, 1.25)
             count += 1
