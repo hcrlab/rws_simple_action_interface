@@ -27,7 +27,7 @@ class Head(object):
         goal.pointing_axis.x = 1
         goal.pointing_axis.y = 0
         goal.pointing_axis.z = 0
-        goal.min_duration = rospy.Duration(0.5)
+        goal.min_duration = rospy.Duration(1.0)
         goal.max_velocity = 1.0
 
         #send the goal
@@ -47,6 +47,7 @@ class Head(object):
             #looks out and down
             self.lookAt("base_link", 3.0, 0.0, 0.5)
             count += 1
+        self.lookAt("base_link", 3.0, 0.0, 1.25)
 
     def shake(self, msg):
         count = 0
@@ -55,9 +56,11 @@ class Head(object):
             self.lookAt("base_link", 3.0, 0.75, 1.25)
             self.lookAt("base_link", 3.0, -0.75, 1.25)
             count += 1
+        self.lookAt("base_link", 3.0, 0.0, 1.25)
 
 def main():
-    rospy.init_node('head_nod_node')
+    #head_node was changed from head_nod_node. Watch for any issues with that
+    rospy.init_node('head_node')
     head = Head()
     rospy.Subscriber('nod', Int8, head.nod)
     rospy.Subscriber('shake', Int8, head.shake)
