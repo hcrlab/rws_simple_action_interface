@@ -49,12 +49,54 @@
           this.tts_topic.publish(msg);
         }
 
+        var nod_topic = new ROSLIB.Topic({
+          ros: ros,
+          name: 'rws_simple_action_interface/nod',
+          messageType: 'std_msgs/Int8'
+        });
+
+        function NodController(ros, nod_topic) {
+          this.ros = ros;
+          this.nod_topic = nod_topic;
+        }
+        NodController.prototype.nod = function(num) {
+          num = Number(num);
+          var msg = new ROSLIB.Message({ data: num });
+          this.nod_topic.publish(msg);
+        }
+
+        var shake_topic = new ROSLIB.Topic({
+          ros: ros,
+          name: 'rws_simple_action_interface/shake',
+          messageType: 'std_msgs/Int8'
+        });
+
+        function ShakeController(ros, nod_topic) {
+          this.ros = ros;
+          this.shake_topic = shake_topic;
+        }
+        ShakeController.prototype.shake = function(num) {
+          num = Number(num);
+          var msg = new ROSLIB.Message({ data: num });
+          this.shake_topic.publish(msg);
+        }
+
         $(document).ready(function() {
           var speaker = new SaySomethingController(ros, tts_topic);
+          var head = new NodController(ros, nod_topic);
+          var head2 = new ShakeController(ros, nod_topic);
           $('#talk_button').click(function() {
             var text = $('#text_input').val();
             speaker.speak(text);
           });
+          $('#nod_button').click(function(){
+            var num = $('#num_input').val();
+            head.nod(num);
+          });
+          $('#shake_button').click(function(){
+            var num = $("#num2_input").val();
+            head2.shake(num);
+          })
         });
       });
       
@@ -68,9 +110,27 @@
     <h1 class="page-header">Say something</h1>
     <form class="form" id="talk_form" role="form">
       <div class="input-group">
-        <input type="text" id="text_input" class="form-control">
+        <input type="text" id="text_input" class="form-control" >
         <span class="input-group-btn">
           <button class="btn btn-default" id="talk_button" type="button">Go!</button>
+        </span>
+      </div>
+    </form>
+    <h1 class ="page-header">Nod</h1>
+    <form class="form" id="talk_form" role="form">
+      <div class="input-group">
+        <input type="number" id="num_input" class="form-control">
+        <span class="input-group-btn">
+          <button class="btn btn-default" id="nod_button" type="button">Go!</button>
+        </span>
+      </div>
+    </form>
+    <h1 class ="page-header">Shake Head</h1>
+    <form class="form" id="talk_form" role="form">
+      <div class="input-group">
+        <input type="number" id="num2_input" class="form-control">
+        <span class="input-group-btn">
+          <button class="btn btn-default" id="shake_button" type="button">Go!</button>
         </span>
       </div>
     </form>
