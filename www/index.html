@@ -81,7 +81,33 @@
           this.shake_topic.publish(msg);
         }
 
-       /* Add a laser button - figure out how to create a new Empty msg */
+        var laser_ON_topic = new ROSLIB.Topic({
+          ros: ros,
+          name: 'rws_simple_action_interface/laser_ON',
+          messageType: 'std_msgs/Empty'
+        });
+        function LaserOnController(ros, laser_ON_topic) {
+          this.ros = ros;
+          this.laser_ON_topic = laser_ON_topic;
+        }
+        LaserOnController.prototype.laser_ON = function(){
+          var msg = new ROSLIB.Message();
+          this.laser_ON_topic.publish(msg);
+        }
+
+        var laser_OFF_topic = new ROSLIB.Topic({
+          ros: ros,
+          name: 'rws_simple_action_interface/laser_OFF',
+          messageType: 'std_msgs/Empty'
+        });
+        function LaserOffController(ros, laser_OFF_topic) {
+          this.ros = ros;
+          this.laser_OFF_topic = laser_OFF_topic);
+        }
+        LaserOffController.prototype.laser_OFF = function(){
+          var msg = new ROSLIB.Message();
+          this.laser_OFF_topic.publish(msg):
+        }
 
         var command_topic = new ROSLIB.Topic({
           ros:ros,
@@ -102,7 +128,9 @@
           var speaker = new SaySomethingController(ros, tts_topic);
           var head = new NodController(ros, nod_topic);
           var head2 = new ShakeController(ros, shake_topic);
-          var commander = new CommandController(ros, command_topic) 
+          var laser = new LaserOnController(ros, laser_ON_topic);
+          var laser2 - new LaserOffController(ros, laser_OFF_topic);
+          var commander = new CommandController(ros, command_topic);
         
           $('#talk_button').click(function() {
             var text = $('#text_input').val();
@@ -116,6 +144,12 @@
             var num = $("#num2_input").val();
             head2.shake(num);
           });
+          $('#laser_ON_button').click(function(){
+            laser.laser_ON();
+          })
+          $('#laser_OFF_button').click(function(){
+            laser.laser_OFF();
+          })
           $('command_button').click(function(){
             var initialCommand = $('#text2_input').val();
             var finalCommand = commander.filter(initialCommand);
@@ -159,6 +193,15 @@
         <input type="number" id="num2_input" class="form-control">
         <span class="input-group-btn">
           <button class="btn btn-default" id="shake_button" type="button">Go!</button>
+        </span>
+      </div>
+    </form>
+    <h1 class ="page-header">Laser</h1>
+    <form class="form" id="talk_form" role="form">
+      <div class="input-group">
+        <span class="input-group-btn">
+          <button class="btn btn-default" id="laser_ON_button" type="button">Laser ON</button>
+          <button class="btn btn-default" id="laser_OFF_button" type="button">Laser OFF</button>
         </span>
       </div>
     </form>
