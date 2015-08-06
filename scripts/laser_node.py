@@ -8,11 +8,11 @@ class Laser(object):
     def __init__(self):
         self.client = dynamic_reconfigure.client.Client('camera_synchronizer_node')
 
-    def on(self, msg):
+    def laser_ON(self, msg):
     	params = { 'narrow_stereo_trig_mode' : 3 }
     	self.client.update_configuration(params)
 
-    def off(self,msg):
+    def laser.OFF(self,msg):
     	params2 = { 'narrow_stereo_trig_mode' : 4 }
     	self.client.update_configuration(params2)
         
@@ -20,8 +20,8 @@ class Laser(object):
 def main():
 	rospy.init_node('laser_node')
 	laser = Laser()
-	rospy.Subscriber('laser_ON', Empty, laser.on)
-	rospy.Subscriber('laser_OFF', Empty, laser.off)
+	rospy.Subscriber('laser_ON', Empty, laser.laser_ON)
+	rospy.Subscriber('laser_OFF', Empty, laser.laser_OFF)
 	rospy.spin()
 
 

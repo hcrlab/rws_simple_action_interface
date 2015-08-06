@@ -71,7 +71,7 @@
           messageType: 'std_msgs/Int8'
         });
 
-        function ShakeController(ros, nod_topic) {
+        function ShakeController(ros, shake_topic) {
           this.ros = ros;
           this.shake_topic = shake_topic;
         }
@@ -81,10 +81,29 @@
           this.shake_topic.publish(msg);
         }
 
+       /* Add a laser button - figure out how to create a new Empty msg */
+
+        var command_topic = new ROSLIB.Topic({
+          ros:ros,
+          name: 'rws_simple_action_interface/command'
+          messageType: 'std_msgs/String"'
+        });
+        function CommandController(ros, command_topic){
+          this.ros = ros;
+          this.command_topic = command_topic;
+        }
+        CommandController.prototype.filter = function(text){
+          var msg = new ROSLIB.Message({ data: text});
+          this.command_topic.publish(msg);
+        }
+        
+
         $(document).ready(function() {
           var speaker = new SaySomethingController(ros, tts_topic);
           var head = new NodController(ros, nod_topic);
-          var head2 = new ShakeController(ros, nod_topic);
+          var head2 = new ShakeController(ros, shake_topic);
+          var commander = new CommandController(ros, command_topic) 
+        
           $('#talk_button').click(function() {
             var text = $('#text_input').val();
             speaker.speak(text);
@@ -96,7 +115,16 @@
           $('#shake_button').click(function(){
             var num = $("#num2_input").val();
             head2.shake(num);
-          })
+          });
+          $('command_button').click(function(){
+            var initialCommand = $('#text2_input').val();
+            var finalCommand = commander.filter(initialCommand);
+            if (finalCommand == "nod"){
+              head.nod(2);
+            } else if (finalCommand == "shake"){
+              head2.shake(2);
+            }
+          });
         });
       });
       
