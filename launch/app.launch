@@ -3,6 +3,7 @@
     <node name="sound_play_tts" pkg="rws_simple_action_interface" type="tts_node.py" />
     <node name="sound_play_node" pkg="sound_play" type="soundplay_node.py" />
     <node name="nod_node" pkg="rws_simple_action_interface" type="head_node.py"/>
+    <node name="laser_node" pkg="rws_simple_action_interface" type="laser_node.py"/>
     <node name="command_node" pkg="rws_simple_action_interface" type="command_node.py"/>
   </group>
 </launch>
