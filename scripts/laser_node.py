@@ -12,7 +12,7 @@ class Laser(object):
     	params = { 'narrow_stereo_trig_mode' : 3 }
     	self.client.update_configuration(params)
 
-    def laser.OFF(self,msg):
+    def laser_OFF(self, msg):
     	params2 = { 'narrow_stereo_trig_mode' : 4 }
     	self.client.update_configuration(params2)
         

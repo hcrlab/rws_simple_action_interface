@@ -91,7 +91,7 @@
           this.laser_ON_topic = laser_ON_topic;
         }
         LaserOnController.prototype.laser_ON = function(){
-          var msg = new ROSLIB.Message();
+          var msg = new ROSLIB.Message({});
           this.laser_ON_topic.publish(msg);
         }
 
