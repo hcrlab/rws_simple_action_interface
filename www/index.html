@@ -111,8 +111,8 @@
 
         var command_topic = new ROSLIB.Topic({
           ros:ros,
-          name: 'rws_simple_action_interface/command'
-          messageType: 'std_msgs/String"'
+          name: 'rws_simple_action_interface/command',
+          messageType: 'std_msgs/String'
         });
         function CommandController(ros, command_topic){
           this.ros = ros;
@@ -170,7 +170,7 @@
   
   <body>
     <h1 class="page-header">Say something</h1>
-    <h3>Enter text for the PR2 to speak</h3>
+    <h6>Enter text for the PR2 to speak</h6>
     <form class="form" id="talk_form" role="form">
       <div class="input-group">
         <input type="text" id="text_input" class="form-control" >
@@ -180,7 +180,7 @@
       </div>
     </form>
     <h1 class ="page-header">Nod</h1>
-    <h3>Enter the number of times the PR2 will nod</h3>
+    <h6>Enter the number of times the PR2 will nod</h6>
     <form class="form" id="talk_form" role="form">
       <div class="input-group">
         <input type="number" id="num_input" class="form-control">
@@ -190,7 +190,7 @@
       </div>
     </form>
     <h1 class ="page-header">Shake Head</h1>
-    <h3>Enter the number of times the PR2 will shake its head</h3>
+    <h6>Enter the number of times the PR2 will shake its head</h6>
     <form class="form" id="talk_form" role="form">
       <div class="input-group">
         <input type="number" id="num2_input" class="form-control">
