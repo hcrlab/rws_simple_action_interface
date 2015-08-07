@@ -106,7 +106,7 @@
         }
         LaserOffController.prototype.laser_OFF = function(){
           var msg = new ROSLIB.Message();
-          this.laser_OFF_topic.publish(msg):
+          this.laser_OFF_topic.publish(msg);
         }
 
         var command_topic = new ROSLIB.Topic({
