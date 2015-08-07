@@ -129,7 +129,7 @@
           var head = new NodController(ros, nod_topic);
           var head2 = new ShakeController(ros, shake_topic);
           var laser = new LaserOnController(ros, laser_ON_topic);
-          var laser2 - new LaserOffController(ros, laser_OFF_topic);
+          var laser2 = new LaserOffController(ros, laser_OFF_topic);
           var commander = new CommandController(ros, command_topic);
         
           $('#talk_button').click(function() {
@@ -141,14 +141,14 @@
             head.nod(num);
           });
           $('#shake_button').click(function(){
-            var num = $("#num2_input").val();
+            var num = $('#num2_input').val();
             head2.shake(num);
           });
           $('#laser_ON_button').click(function(){
             laser.laser_ON();
           })
           $('#laser_OFF_button').click(function(){
-            laser.laser_OFF();
+            laser2.laser_OFF();
           })
           $('command_button').click(function(){
             var initialCommand = $('#text2_input').val();
