@@ -6,7 +6,7 @@ from std_msgs.msg import Empty
 
 class Laser(object):
     def __init__(self):
-        self.client = dynamic_reconfigure.client.Client('camera_synchronizer_node/set_parameters')
+        self.client = dynamic_reconfigure.client.Client('camera_synchronizer_node')
 
     def laser_ON(self, msg):
     	params = { 'narrow_stereo_trig_mode' : 3 }
