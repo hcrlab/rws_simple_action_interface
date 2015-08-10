@@ -21,7 +21,7 @@ class Command(object):
 def main():
 	rospy.init_node('command_node')
 	commander = Command()
-	rospy.Subscriber('command_filter', String, commander.command_filter)
+	rospy.Subscriber('command_filter', String, commander.filter)
 	rospy.spin()
 
 

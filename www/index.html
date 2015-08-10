@@ -109,7 +109,7 @@
           this.laser_OFF_topic.publish(msg);
         }
 
-        var command_topic = new ROSLIB.Topic({
+      /*  var command_topic = new ROSLIB.Topic({
           ros:ros,
           name: 'rws_simple_action_interface/command',
           messageType: 'std_msgs/String'
@@ -122,7 +122,7 @@
           var msg = new ROSLIB.Message({ data: text});
           this.command_topic.publish(msg);
         }
-        
+        */
 
         $(document).ready(function() {
           var speaker = new SaySomethingController(ros, tts_topic);
@@ -130,7 +130,7 @@
           var head2 = new ShakeController(ros, shake_topic);
           var laser = new LaserOnController(ros, laser_ON_topic);
           var laser2 = new LaserOffController(ros, laser_OFF_topic);
-          var commander = new CommandController(ros, command_topic);
+        /*  var commander = new CommandController(ros, command_topic); */
         
           $('#talk_button').click(function() {
             var text = $('#text_input').val();
@@ -150,7 +150,7 @@
           $('#laser_OFF_button').click(function(){
             laser2.laser_OFF();
           })
-          $('command_button').click(function(){
+         /* $('command_button').click(function(){
             var initialCommand = $('#text2_input').val();
             var finalCommand = commander.filter(initialCommand);
             if (finalCommand == "nod"){
@@ -158,7 +158,7 @@
             } else if (finalCommand == "shake"){
               head2.shake(2);
             }
-          });
+          }); */
         });
       });
       
