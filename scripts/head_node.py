@@ -30,18 +30,15 @@ class Head(object):
         goal.min_duration = rospy.Duration(1.0)
         goal.max_velocity = 1.0
 
-        #send the goal
         self._action_client.send_goal(goal)
-        #wait for result
         self._action_client.wait_for_result()
-        #get the result...?
         return self._action_client.get_result()
 
 
     def nod(self, msg):
         count = 0
         while (not rospy.is_shutdown() and count < msg.data):
-            #PR2 is about 1.25 m high?
+            #PR2 is about 1.25 m high
             #looks out and up
             self.lookAt("base_link", 3.0, 0.0, 2.0)
             #looks out and down
@@ -52,14 +49,13 @@ class Head(object):
     def shake(self, msg):
         count = 0
         while (not rospy.is_shutdown() and count < msg.data):
-            #test the z value?
+            
             self.lookAt("base_link", 3.0, 0.75, 1.25)
             self.lookAt("base_link", 3.0, -0.75, 1.25)
             count += 1
         self.lookAt("base_link", 3.0, 0.0, 1.25)
 
 def main():
-    #head_node was changed from head_nod_node. Watch for any issues with that
     rospy.init_node('head_node')
     head = Head()
     rospy.Subscriber('nod', Int8, head.nod)

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+#This hasn't been added to index.html
 import rospy
 import dynamic_reconfigure.client
 from std_msgs.msg import Empty
