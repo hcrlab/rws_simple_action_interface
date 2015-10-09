@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html>
+  <div id='help' style="position:absolute; right:0; top:0;"  >
+    <a href="https://github.com/hcrlab/rws_simple_action_interface/wiki" target="_blank">Help</a>
+  </div>
+
   <head>
     <meta charset="utf-8" />
     <style>
@@ -136,8 +140,7 @@
         <select id="select_dialect"></select>
       </div>
     </div>
-    <!--Contains code from Say Something-->
-    <h1 class="page-header center">Say Something</h1>
+    <h1 class="page-header center">Say something</h1>
     <h6 class="center">Enter text for the PR2 to speak</h6>
     <form class="form" id="talk_form" role="form">
       <div class="input-group">
@@ -167,7 +170,15 @@
         </span>
       </div>
     </form>
-    <script>    
+    <script>
+    var ros1 = $.get('/get_websocket_url', function(data, status){
+      var ws_url = data;
+      var ros = new ROSLIB.Ros({
+        url: ws_url
+      });
+      return ros;
+    })
+    
       $.get('/get_websocket_url', function(data, status) {
         var ws_url = data;
         var ros = new ROSLIB.Ros({
@@ -186,10 +197,11 @@
           console.log('Connection to websocket server closed.');
         });
 
+        
+
         var tts_topic = new ROSLIB.Topic({
           ros: ros,
-          /*Topic name (text_to_speech) matches the topic that the subscriber in tts_node.py is looking for*/
-          name: 'rws_simple_action_interface/text_to_speech', 
+          name: 'rws_simple_action_interface/text_to_speech',
           messageType: 'std_msgs/String'
         });
 
@@ -242,18 +254,18 @@
           var head = new NodController(ros, nod_topic);
           var head2 = new ShakeController(ros, shake_topic);
           
-          /*These buttons are triggered differently than the speech recognition buttons*/
+        
           $('#talk_button').click(function() {
             var text = $('#text_input').val();
             speaker.speak(text);
           });
           $('#nod_button').click(function(){
             var num = $('#num_input').val();
-            /*Defauls to three nods if the box is empty, such as for speech commands*/
-            /*If a number is left in the input box, the speech command will trigger than number*/
+            var test2 = false;
             if (num == ""){
               num = "3";
             }
+            test2 = true;
             head.nod(num);
           });
           $('#shake_button').click(function(){
@@ -265,237 +277,247 @@
           });
         });
       });
+      
 
-      var langs =
-      [['Afrikaans',      ['af-ZA']],
-      ['Bahasa Indonesia',['id-ID']],
-      ['Bahasa Melayu',   ['ms-MY']],
-      ['Català',          ['ca-ES']],
-      ['Čeština',         ['cs-CZ']],
-      ['Deutsch',         ['de-DE']],
-      ['English',         ['en-AU', 'Australia'],
-                          ['en-CA', 'Canada'],
-                          ['en-IN', 'India'],
-                          ['en-NZ', 'New Zealand'],
-                          ['en-ZA', 'South Africa'],
-                          ['en-GB', 'United Kingdom'],
-                          ['en-US', 'United States']],
-      ['Español',         ['es-AR', 'Argentina'],
-                          ['es-BO', 'Bolivia'],
-                          ['es-CL', 'Chile'],
-                          ['es-CO', 'Colombia'],
-                          ['es-CR', 'Costa Rica'],
-                          ['es-EC', 'Ecuador'],
-                          ['es-SV', 'El Salvador'],
-                          ['es-ES', 'España'],
-                          ['es-US', 'Estados Unidos'],
-                          ['es-GT', 'Guatemala'],
-                          ['es-HN', 'Honduras'],
-                          ['es-MX', 'México'],
-                          ['es-NI', 'Nicaragua'],
-                          ['es-PA', 'Panamá'],
-                          ['es-PY', 'Paraguay'],
-                          ['es-PE', 'Perú'],
-                          ['es-PR', 'Puerto Rico'],
-                          ['es-DO', 'República Dominicana'],
-                          ['es-UY', 'Uruguay'],
-                          ['es-VE', 'Venezuela']],
-      ['Euskara',         ['eu-ES']],
-      ['Français',        ['fr-FR']],
-      ['Galego',          ['gl-ES']],
-      ['Hrvatski',        ['hr_HR']],
-      ['IsiZulu',         ['zu-ZA']],
-      ['Íslenska',        ['is-IS']],
-      ['Italiano',        ['it-IT', 'Italia'],
-                          ['it-CH', 'Svizzera']],
-      ['Magyar',          ['hu-HU']],
-      ['Nederlands',      ['nl-NL']],
-      ['Norsk bokmål',    ['nb-NO']],
-      ['Polski',          ['pl-PL']],
-      ['Português',       ['pt-BR', 'Brasil'],
-                          ['pt-PT', 'Portugal']],
-      ['Română',          ['ro-RO']],
-      ['Slovenčina',      ['sk-SK']],
-      ['Suomi',           ['fi-FI']],
-      ['Svenska',         ['sv-SE']],
-      ['Türkçe',          ['tr-TR']],
-      ['български',       ['bg-BG']],
-      ['Pусский',         ['ru-RU']],
-      ['Српски',          ['sr-RS']],
-      ['한국어',           ['ko-KR']],
-      ['中文',             ['cmn-Hans-CN', '普通话 (中国大陆)'],
-                          ['cmn-Hans-HK', '普通话 (香港)'],
-                          ['cmn-Hant-TW', '中文 (台灣)'],
-                          ['yue-Hant-HK', '粵語 (香港)']],
-      ['日本語',           ['ja-JP']],
-      ['Lingua latīna',   ['la']]];
-      for (var i = 0; i < langs.length; i++) {
-        select_language.options[i] = new Option(langs[i][0], i);
-      }
-      select_language.selectedIndex = 6;
-      updateCountry();
-      select_dialect.selectedIndex = 6;
-      showInfo('info_start');
-      function updateCountry() {
-        for (var i = select_dialect.options.length - 1; i >= 0; i--) {
-          select_dialect.remove(i);
-        }
-        var list = langs[select_language.selectedIndex];
-        for (var i = 1; i < list.length; i++) {
-          select_dialect.options.add(new Option(list[i][1], list[i][0]));
-        }
-        select_dialect.style.visibility = list[1].length == 1 ? 'hidden' : 'visible';
-      }
-      var execute_action = false;
-      var final_transcript = '';
-      var recognizing = false;
-      var ignore_onend;
-      var start_timestamp;
-      if (!('webkitSpeechRecognition' in window)) {
-        upgrade();
-      } else {
-        start_button.style.display = 'inline-block';
-        var recognition = new webkitSpeechRecognition();
-        recognition.continuous = true;
-        /*only shows final results*/
-        recognition.interimResults = false;
-        recognition.onstart = function() {
-          recognizing = true;
-          showInfo('info_speak_now');
-          start_img.src = 'mic-animate.gif';
-        };
-        recognition.onerror = function(event) {
-          if (event.error == 'no-speech') {
-            start_img.src = 'mic.gif';
-            showInfo('info_no_speech');
-            ignore_onend = true;
+
+        
+
+        
+          var langs =
+          [['Afrikaans',      ['af-ZA']],
+          ['Bahasa Indonesia',['id-ID']],
+          ['Bahasa Melayu',   ['ms-MY']],
+          ['Català',          ['ca-ES']],
+          ['Čeština',         ['cs-CZ']],
+          ['Deutsch',         ['de-DE']],
+          ['English',         ['en-AU', 'Australia'],
+                              ['en-CA', 'Canada'],
+                              ['en-IN', 'India'],
+                              ['en-NZ', 'New Zealand'],
+                              ['en-ZA', 'South Africa'],
+                              ['en-GB', 'United Kingdom'],
+                              ['en-US', 'United States']],
+          ['Español',         ['es-AR', 'Argentina'],
+                              ['es-BO', 'Bolivia'],
+                              ['es-CL', 'Chile'],
+                              ['es-CO', 'Colombia'],
+                              ['es-CR', 'Costa Rica'],
+                              ['es-EC', 'Ecuador'],
+                              ['es-SV', 'El Salvador'],
+                              ['es-ES', 'España'],
+                              ['es-US', 'Estados Unidos'],
+                              ['es-GT', 'Guatemala'],
+                              ['es-HN', 'Honduras'],
+                              ['es-MX', 'México'],
+                              ['es-NI', 'Nicaragua'],
+                              ['es-PA', 'Panamá'],
+                              ['es-PY', 'Paraguay'],
+                              ['es-PE', 'Perú'],
+                              ['es-PR', 'Puerto Rico'],
+                              ['es-DO', 'República Dominicana'],
+                              ['es-UY', 'Uruguay'],
+                              ['es-VE', 'Venezuela']],
+          ['Euskara',         ['eu-ES']],
+          ['Français',        ['fr-FR']],
+          ['Galego',          ['gl-ES']],
+          ['Hrvatski',        ['hr_HR']],
+          ['IsiZulu',         ['zu-ZA']],
+          ['Íslenska',        ['is-IS']],
+          ['Italiano',        ['it-IT', 'Italia'],
+                              ['it-CH', 'Svizzera']],
+          ['Magyar',          ['hu-HU']],
+          ['Nederlands',      ['nl-NL']],
+          ['Norsk bokmål',    ['nb-NO']],
+          ['Polski',          ['pl-PL']],
+          ['Português',       ['pt-BR', 'Brasil'],
+                              ['pt-PT', 'Portugal']],
+          ['Română',          ['ro-RO']],
+          ['Slovenčina',      ['sk-SK']],
+          ['Suomi',           ['fi-FI']],
+          ['Svenska',         ['sv-SE']],
+          ['Türkçe',          ['tr-TR']],
+          ['български',       ['bg-BG']],
+          ['Pусский',         ['ru-RU']],
+          ['Српски',          ['sr-RS']],
+          ['한국어',           ['ko-KR']],
+          ['中文',             ['cmn-Hans-CN', '普通话 (中国大陆)'],
+                              ['cmn-Hans-HK', '普通话 (香港)'],
+                              ['cmn-Hant-TW', '中文 (台灣)'],
+                              ['yue-Hant-HK', '粵語 (香港)']],
+          ['日本語',           ['ja-JP']],
+          ['Lingua latīna',   ['la']]];
+            for (var i = 0; i < langs.length; i++) {
+            select_language.options[i] = new Option(langs[i][0], i);
           }
-          if (event.error == 'audio-capture') {
-            start_img.src = 'mic.gif';
-            showInfo('info_no_microphone');
-            ignore_onend = true;
+          select_language.selectedIndex = 6;
+          updateCountry();
+          select_dialect.selectedIndex = 6;
+          showInfo('info_start');
+          function updateCountry() {
+            for (var i = select_dialect.options.length - 1; i >= 0; i--) {
+              select_dialect.remove(i);
+            }
+            var list = langs[select_language.selectedIndex];
+            for (var i = 1; i < list.length; i++) {
+              select_dialect.options.add(new Option(list[i][1], list[i][0]));
+            }
+            select_dialect.style.visibility = list[1].length == 1 ? 'hidden' : 'visible';
           }
-          if (event.error == 'not-allowed') {
-            if (event.timeStamp - start_timestamp < 100) {
-              showInfo('info_blocked');
+          var execute_action = false;
+          var final_transcript = '';
+          var recognizing = false;
+          var ignore_onend;
+          var start_timestamp;
+          if (!('webkitSpeechRecognition' in window)) {
+            upgrade();
+          } else {
+            start_button.style.display = 'inline-block';
+            var recognition = new webkitSpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.onstart = function() {
+              recognizing = true;
+              showInfo('info_speak_now');
+              start_img.src = 'mic-animate.gif';
+            };
+            recognition.onerror = function(event) {
+              if (event.error == 'no-speech') {
+                start_img.src = 'mic.gif';
+                showInfo('info_no_speech');
+                ignore_onend = true;
+              }
+              if (event.error == 'audio-capture') {
+                start_img.src = 'mic.gif';
+                showInfo('info_no_microphone');
+                ignore_onend = true;
+              }
+              if (event.error == 'not-allowed') {
+                if (event.timeStamp - start_timestamp < 100) {
+                  showInfo('info_blocked');
+                } else {
+                  showInfo('info_denied');
+                }
+                ignore_onend = true;
+              }
+            };
+            recognition.onend = function() {
+              recognizing = false;
+              if (ignore_onend) {
+                return;
+              }
+              start_img.src = 'mic.gif';
+              if (!final_transcript) {
+                showInfo('info_start');
+                return;
+              }
+              showInfo('');
+              if (window.getSelection) {
+                window.getSelection().removeAllRanges();
+                var range = document.createRange();
+                range.selectNode(document.getElementById('final_span'));
+                window.getSelection().addRange(range);
+              }
+              if (execute_action) {
+                execute_action = false;
+                executeAction();
+              }
+            };
+            recognition.onresult = function(event) {
+              var interim_transcript = '';
+              for (var i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                  final_transcript += event.results[i][0].transcript;
+                } else {
+                  interim_transcript += event.results[i][0].transcript;
+                }
+              }
+              final_transcript = capitalize(final_transcript);
+              final_span.innerHTML = linebreak(final_transcript);
+              interim_span.innerHTML = linebreak(interim_transcript);
+              if (final_transcript || interim_transcript) {
+                showButtons('inline-block');
+              }
+            };
+          } 
+
+
+          function upgrade() {
+            start_button.style.visibility = 'hidden';
+            showInfo('info_upgrade');
+          }
+          var two_line = /\n\n/g;
+          var one_line = /\n/g;
+          function linebreak(s) {
+            return s.replace(two_line, '<p></p>').replace(one_line, '<br>');
+          }
+          var first_char = /\S/;
+          function capitalize(s) {
+            return s.replace(first_char, function(m) { return m.toUpperCase(); });
+          }
+
+          function executeAction() {
+            var command = final_transcript.toLowerCase();
+            var test = false;
+            if (command.indexOf("nod") > -1){
+              test = true;
+              $('#nod_button').click();
+            } else if (command.indexOf("shake") > -1) {
+              $('#shake_button').click();
+            }
+          }
+
+          function actionButton() {
+            if (recognizing) {
+              execute_action = true;
+              recognizing = false;
+              recognition.stop();
             } else {
-              showInfo('info_denied');
+              executeAction();
             }
-            ignore_onend = true;
+            showInfo('');
           }
-        };
-        recognition.onend = function() {
-          recognizing = false;
-          if (ignore_onend) {
-            return;
+
+
+          function startButton(event) {
+            if (recognizing) {
+              recognition.stop();
+              return;
+            }
+            final_transcript = '';
+            recognition.lang = select_dialect.value;
+            recognition.start();
+            ignore_onend = false;
+            final_span.innerHTML = '';
+            interim_span.innerHTML = '';
+            start_img.src = 'mic-slash.gif';
+            showInfo('info_allow');
+            showButtons('none');
+            start_timestamp = event.timeStamp;
           }
-          start_img.src = 'mic.gif';
-          if (!final_transcript) {
-            showInfo('info_start');
-            return;
-          }
-          showInfo('');
-          if (window.getSelection) {
-            window.getSelection().removeAllRanges();
-            var range = document.createRange();
-            range.selectNode(document.getElementById('final_span'));
-            window.getSelection().addRange(range);
-          }
-          if (execute_action) {
-            execute_action = false;
-            executeAction();
-          }
-        };
-        recognition.onresult = function(event) {
-          var interim_transcript = '';
-          for (var i = event.resultIndex; i < event.results.length; ++i) {
-            if (event.results[i].isFinal) {
-              final_transcript += event.results[i][0].transcript;
+          function showInfo(s) {
+            if (s) {
+              for (var child = info.firstChild; child; child = child.nextSibling) {
+                if (child.style) {
+                  child.style.display = child.id == s ? 'inline' : 'none';
+                }
+              }
+              info.style.visibility = 'visible';
             } else {
-              interim_transcript += event.results[i][0].transcript;
+              info.style.visibility = 'hidden';
             }
           }
-          final_transcript = capitalize(final_transcript);
-          final_span.innerHTML = linebreak(final_transcript);
-          interim_span.innerHTML = linebreak(interim_transcript);
-          if (final_transcript || interim_transcript) {
-            showButtons('inline-block');
-          }
-        };
-      } 
-
-
-      function upgrade() {
-        start_button.style.visibility = 'hidden';
-        showInfo('info_upgrade');
-      }
-      var two_line = /\n\n/g;
-      var one_line = /\n/g;
-      function linebreak(s) {
-        return s.replace(two_line, '<p></p>').replace(one_line, '<br>');
-      }
-      var first_char = /\S/;
-      function capitalize(s) {
-        return s.replace(first_char, function(m) { return m.toUpperCase(); });
-      }
-
-      function executeAction() {
-        var command = final_transcript.toLowerCase();
-        if (command.indexOf("nod") > -1 || command.indexOf("yes") > -1){
-          $('#nod_button').click();
-        } else if (command.indexOf("shake") > -1 || command.indexOf("no") > -1) {
-          $('#shake_button').click();
-        }
-      }
-
-      function actionButton() {
-        if (recognizing) {
-          execute_action = true;
-          recognizing = false;
-          recognition.stop();
-        } else {
-          executeAction();
-        }
-        showInfo('');
-      }
-
-
-      function startButton(event) {
-        if (recognizing) {
-          recognition.stop();
-          return;
-        }
-        final_transcript = '';
-        recognition.lang = select_dialect.value;
-        recognition.start();
-        ignore_onend = false;
-        final_span.innerHTML = '';
-        interim_span.innerHTML = '';
-        start_img.src = 'mic-slash.gif';
-        showInfo('info_allow');
-        showButtons('none');
-        start_timestamp = event.timeStamp;
-      }
-      function showInfo(s) {
-        if (s) {
-          for (var child = info.firstChild; child; child = child.nextSibling) {
-            if (child.style) {
-              child.style.display = child.id == s ? 'inline' : 'none';
+          var current_style;
+          function showButtons(style) {
+            if (style == current_style) {
+              return;
             }
+            current_style = style;
+            execute_button.style.display = style;
           }
-          info.style.visibility = 'visible';
-        } else {
-          info.style.visibility = 'hidden';
-        }
-      }
-      var current_style;
-      function showButtons(style) {
-        if (style == current_style) {
-          return;
-        }
-        current_style = style;
-        execute_button.style.display = style;
-      }
+      
+
+
+      
     </script>
   </body>
 </html>
